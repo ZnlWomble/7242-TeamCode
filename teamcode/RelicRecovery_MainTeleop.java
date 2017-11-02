@@ -85,13 +85,15 @@ public class RelicRecovery_MainTeleop extends OpMode {
             relicArm.setPower(0);
         }
         //Runs the Glyph Tracks
-        if (gamepad2.dpad_up) {
+        if (gamepad1.left_trigger < 0.1) {
             glyphTrackLeft.setPower(1);
             glyphTrackRight.setPower(-1);
-        } else if (gamepad2.dpad_down) {
+        }
+        else if (gamepad1.right_trigger > 0.1) {
             glyphTrackLeft.setPower(-1);
             glyphTrackRight.setPower(1);
-        } else {
+        }
+        else {
             glyphTrackLeft.setPower(0);
             glyphTrackRight.setPower(0);
         }
