@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import java.util.Locale;
 
 @Autonomous
+@Disabled
 
 public class RR_RedAuto_OLD extends LinearOpMode {
     // Variable Declaration Code

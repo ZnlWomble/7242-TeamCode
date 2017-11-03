@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-@Disabled
+
 @TeleOp(name="RR_MainTeleop")
 //A teleop for A.R.T.H.U.R.R
 public class RelicRecovery_MainTeleop extends OpMode {
@@ -16,8 +16,8 @@ public class RelicRecovery_MainTeleop extends OpMode {
     DcMotor motorLeft2;
     DcMotor glyphTrackRight;
     DcMotor glyphTrackLeft;
-    DcMotor glyphPusherArm;
-    DcMotor relicArm;
+    //DcMotor glyphPusherArm;
+    //DcMotor relicArm;
 
     @Override
     public void init() {
@@ -30,9 +30,9 @@ public class RelicRecovery_MainTeleop extends OpMode {
         glyphTrackRight = hardwareMap.dcMotor.get("glyphTrackRight");
         glyphTrackLeft = hardwareMap.dcMotor.get("glyphTrackLeft");
 
-        glyphPusherArm = hardwareMap.dcMotor.get("glyphPusherArm");
+        //glyphPusherArm = hardwareMap.dcMotor.get("glyphPusherArm");
 
-        relicArm = hardwareMap.dcMotor.get("relicArm");
+        //relicArm = hardwareMap.dcMotor.get("relicArm");
     }
 
     @Override
@@ -77,19 +77,19 @@ public class RelicRecovery_MainTeleop extends OpMode {
             }
         }
         //Moves the relic arm up and down
-        if (gamepad2.dpad_up) {
+        /*if (gamepad2.dpad_up) {
             relicArm.setPower(1);
         } else if (gamepad2.dpad_down) {
             relicArm.setPower(-1);
         } else {
             relicArm.setPower(0);
-        }
+        }*/
         //Runs the Glyph Tracks
-        if (gamepad1.left_trigger < 0.1) {
+        if (gamepad1.left_trigger > 0) {
             glyphTrackLeft.setPower(1);
             glyphTrackRight.setPower(-1);
         }
-        else if (gamepad1.right_trigger > 0.1) {
+        else if (gamepad1.right_trigger > 0) {
             glyphTrackLeft.setPower(-1);
             glyphTrackRight.setPower(1);
         }
@@ -98,7 +98,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
             glyphTrackRight.setPower(0);
         }
         //Runs the glyph pushing arm
-        if (gamepad1.a) {
+        /*if (gamepad1.a) {
             glyphPusherArm.setPower(1);
         }
         else if (gamepad1.b) {
@@ -106,6 +106,6 @@ public class RelicRecovery_MainTeleop extends OpMode {
         }
         else {
             glyphPusherArm.setPower(0);
-        }
+        }*/
     }
 }
