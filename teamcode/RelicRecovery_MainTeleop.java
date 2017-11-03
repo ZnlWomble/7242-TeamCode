@@ -44,7 +44,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
         right = forward;
         left = forward;
         //Fast Mode ;-,"
-        if (!gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) {
             if (turn > 0.1 || turn < -0.1){
                 motorRight1.setPower(turn);
                 motorRight2.setPower(turn);
@@ -59,7 +59,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
             }
         }
         //Snail Mode _@;
-        else {
+        else if (!gamepad1.left_bumper){
             right = right/2;
             left = left/2;
             turn = turn/2;
@@ -76,6 +76,25 @@ public class RelicRecovery_MainTeleop extends OpMode {
                 motorLeft2.setPower(left);
             }
         }
+        //Double Snail Mode _(@);
+        else if (gamepad1.right_bumper) {
+            right = right/4;
+            left = left/4;
+            turn = turn/4;
+            if (turn > 0.1 || turn < -0.1){
+                motorRight1.setPower(turn);
+                motorRight2.setPower(turn);
+                motorLeft1.setPower(turn);
+                motorLeft2.setPower(turn);
+            }
+            else {
+                motorRight1.setPower(-right);
+                motorRight2.setPower(-right);
+                motorLeft1.setPower(left);
+                motorLeft2.setPower(left);
+            }
+        }
+
         //Moves the relic arm up and down
         /*if (gamepad2.dpad_up) {
             relicArm.setPower(1);
