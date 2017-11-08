@@ -16,7 +16,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
     DcMotor motorLeft2;
     DcMotor glyphTrackRight;
     DcMotor glyphTrackLeft;
-    //DcMotor glyphPusherArm;
+    DcMotor glyphPusherArm;
     //DcMotor relicArm;
 
     @Override
@@ -30,7 +30,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
         glyphTrackRight = hardwareMap.dcMotor.get("glyphTrackRight");
         glyphTrackLeft = hardwareMap.dcMotor.get("glyphTrackLeft");
 
-        //glyphPusherArm = hardwareMap.dcMotor.get("glyphPusherArm");
+        glyphPusherArm = hardwareMap.dcMotor.get("glyphPusherArm");
 
         //relicArm = hardwareMap.dcMotor.get("relicArm");
     }
@@ -95,7 +95,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
             }
         }
 
-        //Moves the relic arm up and down
+        //Extends the relic arm out and in
         /*if (gamepad2.dpad_up) {
             relicArm.setPower(1);
         } else if (gamepad2.dpad_down) {
@@ -117,14 +117,14 @@ public class RelicRecovery_MainTeleop extends OpMode {
             glyphTrackRight.setPower(0);
         }
         //Runs the glyph pushing arm
-        /*if (gamepad1.a) {
-            glyphPusherArm.setPower(1);
+        if (gamepad1.a) {
+            glyphPusherArm.setPower(.7);
         }
         else if (gamepad1.b) {
-            glyphPusherArm.setPower(-1);
+            glyphPusherArm.setPower(-.7);
         }
         else {
             glyphPusherArm.setPower(0);
-        }*/
+        }
     }
 }
