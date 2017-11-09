@@ -17,6 +17,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
     DcMotor glyphTrackRight;
     DcMotor glyphTrackLeft;
     DcMotor glyphPusherArm;
+    boolean SNAILMODE;
     //DcMotor relicArm;
 
     @Override
@@ -44,7 +45,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
         right = forward;
         left = forward;
         //Fast Mode ;-,"
-        if (gamepad1.left_bumper) {
+        /*if (!SNAILMODE) {
             if (turn > 0.1 || turn < -0.1){
                 motorRight1.setPower(turn);
                 motorRight2.setPower(turn);
@@ -57,9 +58,9 @@ public class RelicRecovery_MainTeleop extends OpMode {
                 motorLeft1.setPower(left);
                 motorLeft2.setPower(left);
             }
-        }
+        }*/
         //Snail Mode _@;
-        else if (!gamepad1.left_bumper){
+        if (!SNAILMODE){
             right = right/2;
             left = left/2;
             turn = turn/2;
@@ -77,7 +78,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
             }
         }
         //Double Snail Mode _(@);
-        else if (gamepad1.right_bumper) {
+        else if (SNAILMODE) {
             right = right/4;
             left = left/4;
             turn = turn/4;
@@ -104,27 +105,34 @@ public class RelicRecovery_MainTeleop extends OpMode {
             relicArm.setPower(0);
         }*/
         //Runs the Glyph Tracks
-        if (gamepad1.left_trigger > 0) {
-            glyphTrackLeft.setPower(1);
-            glyphTrackRight.setPower(-1);
-        }
-        else if (gamepad1.right_trigger > 0) {
-            glyphTrackLeft.setPower(-1);
-            glyphTrackRight.setPower(1);
-        }
-        else {
-            glyphTrackLeft.setPower(0);
-            glyphTrackRight.setPower(0);
+        if (!gamepad1.right_bumper || !gamepad1.left_bumper || gamepad1.right_trigger < 0.1 || gamepad1.left_trigger < 0.1) {
+            if (gamepad1.left_trigger > 0) {
+                glyphTrackLeft.setPower(1);
+            } else if (gamepad1.left_bumper) {
+                glyphTrackLeft.setPower(-1);
+            }
+            if (gamepad1.right_bumper) {
+                glyphTrackRight.setPower(-1);
+            } else if (gamepad1.right_trigger > 0) {
+                glyphTrackRight.setPower(1);
+            }
         }
         //Runs the glyph pushing arm
         if (gamepad1.a) {
-            glyphPusherArm.setPower(.7);
+            glyphPusherArm.setPower(.3);
         }
         else if (gamepad1.b) {
-            glyphPusherArm.setPower(-.7);
+            glyphPusherArm.setPower(-.3);
         }
         else {
             glyphPusherArm.setPower(0);
+        }
+        if (gamepad1.x) {
+            if (SNAILMODE) {
+               SNAILMODE = false;
+            }
+            else if (!SNAILMODE)
+                SNAILMODE = true;
         }
     }
 }
