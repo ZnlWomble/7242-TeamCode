@@ -18,7 +18,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
     DcMotor glyphTrackLeft;
     DcMotor glyphPusherArm;
     boolean SNAILMODE;
-    //DcMotor relicArm;
+    DcMotor relicArm;
 
     @Override
     public void init() {
@@ -33,7 +33,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
 
         glyphPusherArm = hardwareMap.dcMotor.get("glyphPusherArm");
 
-        //relicArm = hardwareMap.dcMotor.get("relicArm");
+        relicArm = hardwareMap.dcMotor.get("relicArm");
     }
 
     @Override
@@ -97,13 +97,13 @@ public class RelicRecovery_MainTeleop extends OpMode {
         }
 
         //Extends the relic arm out and in
-        /*if (gamepad2.dpad_up) {
-            relicArm.setPower(1);
+        if (gamepad2.dpad_up) {
+            relicArm.setPower(0.25);
         } else if (gamepad2.dpad_down) {
-            relicArm.setPower(-1);
+            relicArm.setPower(-0.25);
         } else {
             relicArm.setPower(0);
-        }*/
+        }
         //Runs the Glyph Tracks
         if (!gamepad1.right_bumper || !gamepad1.left_bumper || gamepad1.right_trigger < 0.1 || gamepad1.left_trigger < 0.1) {
             if (gamepad1.left_trigger > 0) {
