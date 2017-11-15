@@ -18,6 +18,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
     DcMotor glyphTrackLeft;
     DcMotor glyphPusherArm;
     boolean SNAILMODE;
+    boolean SPLITCONTROL;
     DcMotor relicArm;
 
     @Override
@@ -105,16 +106,34 @@ public class RelicRecovery_MainTeleop extends OpMode {
             relicArm.setPower(0);
         }
         //Runs the Glyph Tracks
-        if (!gamepad1.right_bumper || !gamepad1.left_bumper || gamepad1.right_trigger < 0.1 || gamepad1.left_trigger < 0.1) {
+        //  If SPLITCONTROL is active the tracks run independently
+        if (SPLITCONTROL){
+            if (!gamepad1.right_bumper || !gamepad1.left_bumper || gamepad1.right_trigger < 0.1 || gamepad1.left_trigger < 0.1) {
+                if (gamepad1.left_trigger > 0) {
+                    glyphTrackLeft.setPower(1);
+                } else if (gamepad1.left_bumper) {
+                    glyphTrackLeft.setPower(-1);
+                }
+                if (gamepad1.right_bumper) {
+                    glyphTrackRight.setPower(-1);
+                } else if (gamepad1.right_trigger > 0) {
+                    glyphTrackRight.setPower(1);
+                }
+            }
+        }
+        // If SPLITCONTROL isn't active the tracks run together
+        else {
             if (gamepad1.left_trigger > 0) {
                 glyphTrackLeft.setPower(1);
-            } else if (gamepad1.left_bumper) {
-                glyphTrackLeft.setPower(-1);
-            }
-            if (gamepad1.right_bumper) {
                 glyphTrackRight.setPower(-1);
-            } else if (gamepad1.right_trigger > 0) {
+            }
+            else if (gamepad1.right_trigger > 0) {
+                glyphTrackLeft.setPower(-1);
                 glyphTrackRight.setPower(1);
+            }
+            else {
+                glyphTrackLeft.setPower(0);
+                glyphTrackRight.setPower(0);
             }
         }
         //Runs the glyph pushing arm
@@ -127,12 +146,24 @@ public class RelicRecovery_MainTeleop extends OpMode {
         else {
             glyphPusherArm.setPower(0);
         }
-        if (gamepad1.x) {
+        //Toggles SNAILMODE
+        if (gamepad1.right_stick_button) {
             if (SNAILMODE) {
-               SNAILMODE = false;
+                SNAILMODE = false;
             }
             else if (!SNAILMODE)
                 SNAILMODE = true;
         }
+        //Toggles SPLITCONTROL
+        if (gamepad1.left_stick_button) {
+            if (SPLITCONTROL) {
+                SPLITCONTROL = false;
+            }
+            else if (!SPLITCONTROL)
+                SPLITCONTROL = true;
+        }
+        telemetry.addData("SNAILMODE is",SNAILMODE);
+        telemetry.addData("SPLITCONTROL is",SPLITCONTROL);
+        telemetry.update();
     }
-}
+    }
