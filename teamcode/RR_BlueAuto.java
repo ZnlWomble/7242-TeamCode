@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 // Import Statements
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -16,7 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -26,7 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous
 
-public class RR_RedAuto extends LinearOpMode {
+public class RR_BlueAuto extends LinearOpMode {
     // Variable Declaration Code
     DcMotor motorRight1;
     DcMotor motorRight2;
@@ -55,7 +55,7 @@ public class RR_RedAuto extends LinearOpMode {
         glyphTrackLeft.setPower(0);
         glyphTrackRight.setPower(0);
     }
-    //  Ejecting the Glyph
+    //   Ejecting the Glyph
     public void ejectGlyph(double power, long time) {
         glyphTrackRight.setPower(power);
         glyphTrackLeft.setPower(-power);
@@ -94,21 +94,21 @@ public class RR_RedAuto extends LinearOpMode {
         ballArm.setPosition(0);
         sleep(1250);
         if (colorSensor.red() > colorSensor.blue() && colorSensor.blue() < 250 && distanceSensor.getDistance(DistanceUnit.INCH) < 4) {
-            moveForward(90, -0.10);
+            moveForward(-90, -0.10);
             reset();
             ballArm.setPosition(0.75);
             sleep(100);
-            moveForward(-600, 0.10);
+            moveForward(600, 0.10);
             //telemetry.addData("The ball is","Blue" );
         } else if (colorSensor.blue() > colorSensor.red() && colorSensor.red() < 250 && distanceSensor.getDistance(DistanceUnit.INCH) < 4) {
-            moveForward(-500, 0.10);
+            moveForward(500, 0.10);
             sleep(100);
             ballArm.setPosition(0.75);
             //telemetry.addData("The ball is","Red" );
         } else {
             ballArm.setPosition(0.75);
             sleep(100);
-            moveForward(-500, 0.10);
+            moveForward(500, 0.10);
             telemetry.addData("I didn't see a", "ball");
         }
         telemetry.update();
@@ -197,17 +197,17 @@ public class RR_RedAuto extends LinearOpMode {
     //      Uses the vumark to go to the correct column
     public void goToCryptobox(double power, RelicRecoveryVuMark glyph) {
         if (glyph == RelicRecoveryVuMark.LEFT) {
-            moveForward(-1414, power);
+            moveForward(520, power);
             telemetry.addData("Moving to", "left");
         } else if (glyph == RelicRecoveryVuMark.CENTER) {
-            moveForward(-1098, power);
+            moveForward(845, power);
             telemetry.addData("Moving to", "center");
         } else if (glyph == RelicRecoveryVuMark.RIGHT) {
-            moveForward(-740, power);
+            moveForward(1170, power);
             telemetry.addData("Moving to", "right");
         } else {
-            moveForward(-740, power);
-            telemetry.addData("There's no VuMark", "I'm just gonna go to the RIGHT");
+            moveForward(520, power);
+            telemetry.addData("There's no VuMark", "I'm just gonna go to the LEFT");
         }
         telemetry.update();
     }
@@ -297,16 +297,13 @@ public class RR_RedAuto extends LinearOpMode {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "color");
         //      Servo for raising and lowering the arm for hitting jewels
         ballArm = hardwareMap.servo.get("armServo");
-
         //      IMU
-                    //parameters
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
