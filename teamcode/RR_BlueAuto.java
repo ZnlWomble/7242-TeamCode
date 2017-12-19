@@ -353,9 +353,9 @@ public class RR_BlueAuto extends LinearOpMode {
                 runGlyphTrack(1, 1000);
                 hitTheGlyph();
                 x++;
-            }
-            moveForward(100, 0.25);
-            sleep(1000);*/
+            }*/
+            moveForward(-100, 0.25);
+            sleep(1000);
             stop();
         }
     }

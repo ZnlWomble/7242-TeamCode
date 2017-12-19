@@ -44,7 +44,7 @@ public class RR_RedAuto extends LinearOpMode {
     Servo ballArm;
     VuforiaLocalizer vuforia;
     boolean goalReached;
-    double TOLERANCE;
+    double TOLERANCE = 0;
     RelicRecoveryVuMark cryptobox = RelicRecoveryVuMark.UNKNOWN;
 
     //  Running Glyph Tracks
@@ -113,29 +113,27 @@ public class RR_RedAuto extends LinearOpMode {
         }
         telemetry.update();
     }
-
     //  Movement Functions
-    public void turnLeftIMU(double angle, double power) {
+    public void turnIMU(double angle, double power) {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         gravity  = imu.getGravity();
-        while(angles.firstAngle > -angle) {
+        if (angles.firstAngle == angle) {
+            reset();
+        }
+        else if (angles.firstAngle < angle) {
             motorRight1.setPower(power);
             motorRight2.setPower(power);
             motorLeft1.setPower(-power);
             motorLeft2.setPower(-power);
         }
-        reset();
-    }
-    public void turnRightIMU(double angle, double power) {
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        gravity  = imu.getGravity();
-        while(angles.firstAngle > angle) {
+        else if (angles.firstAngle > angle) {
             motorRight1.setPower(-power);
             motorRight2.setPower(-power);
             motorLeft1.setPower(power);
             motorLeft2.setPower(power);
         }
-        reset();
+        telemetry.addData("heading:",angles.firstAngle);
+        telemetry.update();
     }
     public void turnRightWithEncoders(double power) {
         motorRight1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -238,6 +236,34 @@ public class RR_RedAuto extends LinearOpMode {
         }
         reset();
     }
+    public void moveForwardInches(int inches, double power) {
+        motorRight1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLeft1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRight2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLeft2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int position = inches * 43;
+
+        motorRight1.setTargetPosition(position);
+        motorRight2.setTargetPosition(position);
+        motorLeft1.setTargetPosition(position);
+        motorLeft2.setTargetPosition(position);
+
+        motorRight1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLeft1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRight2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLeft2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motorRight1.setPower(-power);
+        motorRight2.setPower(-power);
+        motorLeft1.setPower(power);
+        motorLeft2.setPower(power);
+
+        while (motorLeft1.isBusy() & motorLeft2.isBusy() & motorRight1.isBusy() & motorRight2.isBusy()) {
+            //wait
+        }
+        reset();
+    }
 
     public void moveForwardTime(double power, long time) {
         motorRight1.setPower(power);
@@ -293,9 +319,9 @@ public class RR_RedAuto extends LinearOpMode {
         glyphPusherArm = hardwareMap.dcMotor.get("glyphPusherArm");
         //relicArm = hardwareMap.dcMotor.get("relicArm");
 
+        //      Jewel arm components
         colorSensor = hardwareMap.colorSensor.get("color");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "color");
-        //      Servo for raising and lowering the arm for hitting jewels
         ballArm = hardwareMap.servo.get("armServo");
 
         //      IMU
@@ -334,9 +360,10 @@ public class RR_RedAuto extends LinearOpMode {
         ballArm.setPosition(0.60);
 
         AutoTransitioner.transitionOnStop(this, "RR_MainTeleop");
-//Autonomous Code
+        //Autonomous Code
         waitForStart();
         while (opModeIsActive()) {
+            //turnIMU(-90, 0.20);//Right
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             lookForVumark(relicTemplate, relicTrackables, vuMark);
             hitBall();
@@ -345,20 +372,80 @@ public class RR_RedAuto extends LinearOpMode {
             turnLeftWithEncoders(0.25);
             moveForward(250, 0.25);
             ejectGlyph(0.75, 1000);
-            //turnAroundWithEncoders(0.25);
+            moveForward(100, -0.25);
             //  The Robot goes back for more glyphs
             //      if this takes too long it simply goes to the safe zone
-            //int x = 1;
-            /*while (x < 4) {
-                moveForward(1000, 0.25);
-                runGlyphTrack(1, 1000);
-                moveForward(-1000, 0.25);
-                runGlyphTrack(1, 1000);
-                hitTheGlyph();
-                x++;
+            /*int x = 1;
+            int DTP = 1200;
+            if (cryptobox == RelicRecoveryVuMark.LEFT) {
+                while (x < 2) {
+                    turnIMU(-90, 0.20);//Right
+                    moveForward(325, 0.25);
+                    turnIMU(90, 0.20);//Left
+                    moveForward(DTP, 0.25);
+                    runGlyphTrack(1, 1000);
+                    turnIMU(180, 0.25);//Around
+                    moveForward(DTP, 0.25);
+                    ejectGlyph(0.25, 1000);
+                    moveForward(-100, 0.25);
+                    
+                    x++;
+                }
             }
-            moveForward(100, 0.25);
-            sleep(1000);*/
+            else if (cryptobox == RelicRecoveryVuMark.CENTER) {
+                //First Glyph
+                turnIMU(90, 0.20);//Left
+                moveForward(325, 0.25);
+                turnIMU(90, 0.20);//Left
+                moveForward(DTP, 0.25);
+                runGlyphTrack(1, 1000);
+                turnIMU(180, 0.20);//Around
+                moveForward(DTP, 0.25);
+                ejectGlyph(0.25, 1000);
+                moveForward(-100, 0.25);
+                //Second Glyph
+                turnIMU(-90, 0.20);//Right
+                moveForward(650, 0.25);
+                turnIMU(90, 0.20);//Left
+                moveForward(DTP, 0.25);
+                runGlyphTrack(1, 1000);
+                turnIMU(180, 0.20);//Around
+                moveForward(DTP, 0.25);
+                ejectGlyph(0.25, 1000);
+                moveForward(-100, 0.25);
+            }
+            else if (cryptobox == RelicRecoveryVuMark.RIGHT) {
+                while (x < 3) {
+                    turnIMU(90, 0.20);//Left
+                    moveForward(325, 0.25);
+                    turnIMU(90, 0.20);//Left
+                    moveForward(DTP, 0.25);
+                    runGlyphTrack(1, 1000);
+                    turnIMU(180, 0.20);//Around
+                    moveForward(DTP, 0.25);
+                    ejectGlyph(0.25, 1000);
+                    moveForward(-100, 0.25);
+                    
+                    x++;
+                }
+            }
+            else if (cryptobox == RelicRecoveryVuMark.UNKNOWN) {
+                while (x < 2) {
+                    turnLeftWithEncoders(0.25);//Left
+                    moveForward(325, 0.25);
+                    turnLeftWithEncoders(0.25);//Left
+                    moveForward(DTP, 0.25);
+                    runGlyphTrack(-1, 1000);
+                    turnAroundWithEncoders(0.25);//Around
+                    moveForward(DTP, 0.25);
+                    ejectGlyph(0.25, 1000);
+                    moveForward(-100, 0.25);
+                    
+                    x++;
+                }
+            }*/
+            moveForward(-100, 0.25);
+            sleep(1000);
             stop();
         }
     }

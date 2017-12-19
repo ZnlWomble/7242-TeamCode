@@ -25,9 +25,8 @@ public class RelicRecovery_MainTeleop extends OpMode {
     Servo relicBase;
     double base = 0;
     float claw = 0;
-
+    
     Servo ballArm;
-
     @Override
     public void init() {
         //Drive Motors
@@ -44,17 +43,17 @@ public class RelicRecovery_MainTeleop extends OpMode {
         relicArm = hardwareMap.dcMotor.get("relicArm");
         relicClaw = hardwareMap.servo.get("relicClaw");
         relicBase = hardwareMap.servo.get("relicBase");
-
+        
         ballArm = hardwareMap.servo.get("armServo");
-
+        
         //      Brake - when the motor is set to 0 it won't roll freely
-        motorLeft1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*motorLeft1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRight1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorRight2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        motorRight2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        
         ballArm.setPosition(0.60);
-
+        
     }
 
     @Override
@@ -82,7 +81,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
             }
         }
         else {
-            //Snail Mode _@;
+        //Snail Mode _@;
             if (!SNAILMODE){
                 right = right*0.75;
                 left = left*0.75;
@@ -100,7 +99,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
                     motorLeft2.setPower(left);
                 }
             }
-            //Double Snail Mode _(@);
+        //Double Snail Mode _(@);
             else if (SNAILMODE) {
                 right = right/4;
                 left = left/4;
@@ -116,13 +115,13 @@ public class RelicRecovery_MainTeleop extends OpMode {
                     motorRight2.setPower(-right);
                     motorLeft1.setPower(left);
                     motorLeft2.setPower(left);
-                }
+            }   
             }
         }
         //Extends the relic arm out and in
-        if (gamepad1.dpad_up) {
+        if (gamepad2.dpad_right) {
             relicArm.setPower(1);
-        } else if (gamepad1.dpad_down) {
+        } else if (gamepad2.dpad_left) {
             relicArm.setPower(-1);
         } else {
             relicArm.setPower(0);
@@ -131,7 +130,7 @@ public class RelicRecovery_MainTeleop extends OpMode {
         if (gamepad2.x) {
             relicClaw.setPosition(0.4);//open
         }
-        else if (gamepad2.y){
+        else if (gamepad2.y) {
             relicClaw.setPosition(1);//closed
         }
         if (gamepad2.dpad_down) {
@@ -161,28 +160,28 @@ public class RelicRecovery_MainTeleop extends OpMode {
             }
         }
         else {
-            if (gamepad1.left_bumper || gamepad1.left_trigger > 0) {
-                if (gamepad1.left_bumper) {
-                    glyphTrackLeft.setPower(1);
+                if (gamepad1.left_bumper || gamepad1.left_trigger > 0) {
+                    if (gamepad1.left_bumper) {
+                        glyphTrackLeft.setPower(1);
+                    }
+                    else if (gamepad1.left_trigger > 0) {
+                        glyphTrackLeft.setPower(-1);
+                    }
+                    else {
+                        glyphTrackLeft.setPower(0);
+                    }
                 }
-                else if (gamepad1.left_trigger > 0) {
-                    glyphTrackLeft.setPower(-1);
+                if (gamepad1.right_bumper || gamepad1.right_trigger > 0) {
+                    if (gamepad1.right_bumper) {
+                        glyphTrackRight.setPower(-1);
+                    }
+                    else if (gamepad1.right_trigger > 0) {
+                        glyphTrackRight.setPower(1);
+                    }
+                    else {
+                        glyphTrackRight.setPower(0);
+                    }
                 }
-                else {
-                    glyphTrackLeft.setPower(0);
-                }
-            }
-            if (gamepad1.right_bumper || gamepad1.right_trigger > 0) {
-                if (gamepad1.right_bumper) {
-                    glyphTrackRight.setPower(-1);
-                }
-                else if (gamepad1.right_trigger > 0) {
-                    glyphTrackRight.setPower(1);
-                }
-                else {
-                    glyphTrackRight.setPower(0);
-                }
-            }
         }
         //Runs the glyph pushing arm
         if (gamepad1.b) {
